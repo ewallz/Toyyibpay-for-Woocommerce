@@ -42,6 +42,17 @@ class toyyibpay extends WC_Payment_Gateway {
 				'type'    => 'checkbox',
 				'default' => 'no',
 			),
+			'payment_gateway_status' => array(
+		     'title' => 'Gateway Mode',
+		     'description' => 'Improtant: Please make sure you select the correct status.',
+		     'type' => 'select',
+		     'default' => '1',
+		     'label' => 'Label', // checkbox only
+		     'options' => array(
+		          '1' => 'Sandbox',
+			'2' => 'Live Production'
+		     ) // array of options for select/multiselects only
+			),
 			'universal_channel'        => array(
 				'title'   => __( 'Payment Channel', 'toyyibPay' ),
 				'label'   => __( 'Payment Channel Options', 'toyyibPay' ),
@@ -131,10 +142,20 @@ class toyyibpay extends WC_Payment_Gateway {
 			}
 			$toyyibpay_args .= $key . "=" . $value;
 		}
-
+		
+		
 		return array(
 			'result'   => 'success',
-			'redirect' => 'https://toyyibpay.com/index.php/api/wppayv2?' . $toyyibpay_args
+			$payment_gateway_status = sanitize_text_field($this->payment_gateway_status);
+			if($payment_gateway_status == '1')
+			{
+				'redirect' => 'https://dev.toyyibpay.com/index.php/api/wppayv2?' . $toyyibpay_args
+			}
+			else
+			{
+				'redirect' => 'https://toyyibpay.com/index.php/api/wppayv2?' . $toyyibpay_args
+			}
+			
 		);
 	}
 
